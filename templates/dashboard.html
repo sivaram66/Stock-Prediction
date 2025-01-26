@@ -1,0 +1,93 @@
+{% load static %}  <!-- Load static files -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Market Predictor - Dashboard</title>
+    <link rel="stylesheet" href="{% static 'dashboard.css' %}">  <!-- Use static file -->
+</head>
+<body>
+    <div class="background-overlay"></div>
+    
+    <nav class="navbar">
+        <div class="nav-brand">StockAI Predictor</div>
+        <div class="nav-links">
+            <a href="{% url 'home' %}" class="nav-link">Home</a>  <!-- URL routing -->
+            <a href="{% url 'dashboard' %}" class="nav-link active">Dashboard</a>
+            <a href="{% url 'analysis' %}" class="nav-link ">Analysis</a>
+            <a href="{% url 'futuregains' %}" class="nav-link ">Market Insights</a>
+            <a href="{% url 'logout' %}" class="nav-link ">Logout</a>
+        </div>
+    </nav>
+        <div class="welcome-banner">
+                        <h2>Hi, <span class="username">{{ user.username }}</span></h2>
+            {% if user.is_superuser %}
+
+            {% else %}
+                {% if message %}
+                    <p>{{ message }}</p>
+                {% else %}
+                    <p>Chances left: {{ chances_left }}</p>
+                {% endif %}
+            {% endif %}
+        </div>
+    <div class="dashboard">
+        <div class="sidebar">
+            <form method="post" class="stock-form">
+                {% csrf_token %}  <!-- CSRF protection -->
+                <div class="stock-selector">
+                    <h3>Select Stock</h3>
+                    <select class="stock-select" name="ticker">
+                        <option value="AAPL" {% if selected_ticker == 'AAPL' %}selected{% endif %}>AAPL - Apple Inc.</option>
+                        <option value="GOOGL" {% if selected_ticker == 'GOOGL' %}selected{% endif %}>GOOGL - Google</option>
+                        <option value="MSFT" {% if selected_ticker == 'MSFT' %}selected{% endif %}>MSFT - Microsoft</option>
+                        <option value="AMZN" {% if selected_ticker == 'AMZN' %}selected{% endif %}>AMZN - Amazon</option>
+                        <option value="TSLA" {% if selected_ticker == 'TSLA' %}selected{% endif %}>TSLA - Tesla</option>
+                        <option value="RELIANCE.NS" {% if selected_ticker == 'RELIANCE.NS' %}selected{% endif %}>RELIANCE.NS - Reliance Industries</option>
+                        <option value="TCS.NS" {% if selected_ticker == 'TCS.NS' %}selected{% endif %}>TCS.NS - Tata Consultancy Services</option>
+                        <option value="INFY.NS" {% if selected_ticker == 'INFY.NS' %}selected{% endif %}>INFY.NS - Infosys</option>
+                        <option value="HDFCBANK.NS" {% if selected_ticker == 'HDFCBANK.NS' %}selected{% endif %}>HDFCBANK.NS - HDFC Bank</option>
+                        <option value="ICICIBANK.NS" {% if selected_ticker == 'ICICIBANK.NS' %}selected{% endif %}>ICICIBANK.NS - ICICI Bank</option>
+                        <option value="BAJFINANCE.NS" {% if selected_ticker == 'BAJFINANCE.NS' %}selected{% endif %}>BAJFINANCE.NS - Bajaj Finance</option>
+                        <option value="HINDUNILVR.NS" {% if selected_ticker == 'HINDUNILVR.NS' %}selected{% endif %}>HINDUNILVR.NS - Hindustan Unilever</option>
+                        <option value="KOTAKBANK.NS" {% if selected_ticker == 'KOTAKBANK.NS' %}selected{% endif %}>KOTAKBANK.NS - Kotak Mahindra Bank</option>
+                        <option value="SBIN.NS" {% if selected_ticker == 'SBIN.NS' %}selected{% endif %}>SBIN.NS - State Bank of India</option>
+                    </select>
+                    <button type="submit" class="submit-btn">Get Data</button>
+                </div>
+            </form>
+        </div>
+
+        <main class="dashboard-content">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Last Trading Date</h3>
+                    <p class="stat-value">{{ latest_date }}</p>  <!-- Display dynamic value -->
+                </div>
+                <div class="stat-card">
+                    <h3>Previous Close Price<br>({{ latest_date }})</h3>
+                    <p class="stat-value">{{ currency_symbol }}{{ latest_close_price }}</p>  <!-- Display dynamic value with currency -->
+                </div>
+                <div class="stat-card">
+                    <h3>Previous Close Price Prediction</h3>
+                    <p class="stat-value">{{ currency_symbol }}{{ predicted_price_index_0 }}</p>  <!-- Display dynamic value with currency -->
+                </div>
+                <div class="stat-card">
+                    <h3>Prediction Accuracy</h3>
+                    <p class="stat-value">{{ prediction_accuracy }}%</p>  <!-- Display dynamic value -->
+                </div>
+                <div class="stat-card">
+                    <h3>Next Stock Price</h3>
+                    <p class="stat-value">{{ currency_symbol }}{{ predicted_price_future }}</p>  <!-- Display dynamic value with currency -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2024 StockAI Predictor. All rights reserved.</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,61 @@
+{% load static %}  <!-- Load static files -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Market Predictor - Home</title>
+    <link rel="stylesheet" href="{% static 'home.css' %}">  <!-- Use static file -->
+</head>
+<body>
+    <div class="background-overlay"></div>
+    
+    <nav class="navbar">
+        <div class="nav-brand">StockAI Predictor</div>
+        <div class="nav-links">
+            <a href="{% url 'home' %}" class="nav-link active">Home</a>  <!-- URL routing -->
+            <a href="{% url 'dashboard' %}" class="nav-link">Dashboard</a>
+            <a href="{% url 'login' %}" class="nav-link">Login</a>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="hero-content">
+            <h1>AI-Powered Stock Market Predictions</h1>
+            <p>Make informed decisions with our advanced LSTM-based prediction model</p>
+            <a href="{% url 'dashboard' %}" class="cta-button">View Dashboard</a>  <!-- URL routing -->
+        </div>
+    </header>
+
+    <main class="features">
+        <h2>Why Choose Our Platform?</h2>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="feature-icon">📈</div>
+                <h3>LSTM Technology</h3>
+                <p>Advanced deep learning models for accurate predictions</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>Real-time Analysis</h3>
+                <p>Up-to-date market data and predictions</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h3>High Accuracy</h3>
+                <p>Precise predictions based on historical data</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📱</div>
+                <h3>User Friendly</h3>
+                <p>Easy to use interface for all users</p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2024 StockAI Predictor. All rights reserved.</p>
+    </footer>
+</body>
+</html>

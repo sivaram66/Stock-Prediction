@@ -1,0 +1,82 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Data Visualization</title>
+    <link rel="stylesheet" href="{% static 'analysis.css' %}?v=123">
+</head>
+<body>
+    <div class="background-overlay"></div>
+    
+    <nav class="navbar">
+        <div class="nav-brand">Stock Data Visualizer</div>
+        <div class="nav-links">
+            <a href="{% url 'home' %}" class="nav-link">Home</a>
+            <a href="{% url 'dashboard' %}" class="nav-link">Dashboard</a>
+            <a href="{% url 'analysis' %}" class="nav-link active">Analysis</a>
+            <a href="{% url 'futuregains' %}" class="nav-link ">Market Insights</a>
+            <a href="{% url 'logout' %}" class="nav-link ">Logout</a>
+        </div>
+    </nav>
+    {% if user.is_superuser %}
+            
+            {% else %}
+                {% if message %}
+                    <p>{{ message }}</p>
+                {% else %}
+                    <p>Chances left: {{ chances_left }}</p>
+                {% endif %}
+            {% endif %}
+
+    <div class="dashboard">
+        <aside class="sidebar">
+            <form method="post" class="stock-form">
+                {% csrf_token %}  <!-- CSRF protection -->
+                <div class="stock-selector">
+                    <h3>Select Stock</h3>
+                    <select class="stock-select" name="ticker">
+                        <option value="AAPL" {% if selected_ticker == 'AAPL' %}selected{% endif %}>AAPL - Apple Inc.</option>
+                        <option value="GOOGL" {% if selected_ticker == 'GOOGL' %}selected{% endif %}>GOOGL - Google</option>
+                        <option value="MSFT" {% if selected_ticker == 'MSFT' %}selected{% endif %}>MSFT - Microsoft</option>
+                        <option value="AMZN" {% if selected_ticker == 'AMZN' %}selected{% endif %}>AMZN - Amazon</option>
+                        <option value="TSLA" {% if selected_ticker == 'TSLA' %}selected{% endif %}>TSLA - Tesla</option>
+                        <option value="RELIANCE.NS" {% if selected_ticker == 'RELIANCE.NS' %}selected{% endif %}>RELIANCE.NS - Reliance Industries</option>
+                        <option value="TCS.NS" {% if selected_ticker == 'TCS.NS' %}selected{% endif %}>TCS.NS - Tata Consultancy Services</option>
+                        <option value="INFY.NS" {% if selected_ticker == 'INFY.NS' %}selected{% endif %}>INFY.NS - Infosys</option>
+                        <option value="HDFCBANK.NS" {% if selected_ticker == 'HDFCBANK.NS' %}selected{% endif %}>HDFCBANK.NS - HDFC Bank</option>
+                        <option value="ICICIBANK.NS" {% if selected_ticker == 'ICICIBANK.NS' %}selected{% endif %}>ICICIBANK.NS - ICICI Bank</option>
+                        <option value="BAJFINANCE.NS" {% if selected_ticker == 'BAJFINANCE.NS' %}selected{% endif %}>BAJFINANCE.NS - Bajaj Finance</option>
+                        <option value="HINDUNILVR.NS" {% if selected_ticker == 'HINDUNILVR.NS' %}selected{% endif %}>HINDUNILVR.NS - Hindustan Unilever</option>
+                        <option value="KOTAKBANK.NS" {% if selected_ticker == 'KOTAKBANK.NS' %}selected{% endif %}>KOTAKBANK.NS - Kotak Mahindra Bank</option>
+                        <option value="SBIN.NS" {% if selected_ticker == 'SBIN.NS' %}selected{% endif %}>SBIN.NS - State Bank of India</option>
+                    </select>
+                    <button type="submit" class="submit-btn">Get Data</button>
+                </div>
+            </form>
+        </aside>
+
+        <main>
+            <div class="graph-container">
+            <h2>Stock Prediction for {{ stock }}</h2>
+            <div class="graph">
+                <img src="data:image/png;base64,{{ img_data2 }}" alt="Stock Prediction Chart" style="width: 100%; height: 100%; object-fit: contain;">
+            </div>
+        </div>
+        </div>
+        </main>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2023 Stock Data Visualizer. All rights reserved.</p>
+    </footer>
+
+    <script>
+        function updateGraphs() {
+            // In a real application, you would trigger an AJAX request to update the graphs dynamically
+            alert('Graph update requested. In a real application, this would fetch new data and redraw the graphs.');
+        }
+    </script>
+</body>
+</html>

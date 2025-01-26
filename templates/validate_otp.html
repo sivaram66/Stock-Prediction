@@ -1,0 +1,75 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StockAI Predictor - Verify OTP</title>
+    <!-- Link to static CSS file -->
+    <link rel="stylesheet" href="{% static 'validate_otp.css' %}">
+    <script>
+        // Function to move the focus to the next input field
+        function moveFocus(current, nextFieldId, prevFieldId, event) {
+            if (event.key === 'Backspace' && current.value === '') {
+                // If Backspace is pressed and the field is empty, focus on the previous field
+                if (prevFieldId) {
+                    document.getElementById(prevFieldId).focus();
+                }
+            } else if (current.value.length === current.maxLength && nextFieldId) {
+                // If the current field is filled, move to the next input
+                document.getElementById(nextFieldId).focus();
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="background-overlay"></div>
+    
+    <nav class="navbar">
+        <div class="nav-brand">StockAI Predictor</div>
+        <div class="nav-links">
+            <a href="{% url 'home' %}" class="nav-link">Home</a> <!-- Dynamic link for home -->
+            <a href="{% url 'login' %}" class="nav-link">Login</a> <!-- Dynamic link for login -->
+            <a href="{% url 'register' %}" class="nav-link">Register</a> <!-- Dynamic link for register -->
+        </div>
+    </nav>
+
+    <main class="auth-container">
+        <div class="auth-card">
+            <h1>Verify Your Email</h1>
+            <p class="auth-subtitle">Enter the verification code sent to your email</p>
+            
+            <!-- Display messages here -->
+            {% if messages %}
+                <div class="message-container">
+                    {% for message in messages %}
+                        <div class="message">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            
+            <form class="otp-form" method="POST">
+                {% csrf_token %} <!-- CSRF token for security -->
+                <div class="otp-inputs">
+                    <input type="text" maxlength="1" pattern="[0-9]" inputmode="numeric" name="otp1" id="otp1" required oninput="moveFocus(this, 'otp2', null, event)" onkeydown="moveFocus(this, 'otp2', null, event)">
+                    <input type="text" maxlength="1" pattern="[0-9]" inputmode="numeric" name="otp2" id="otp2" required oninput="moveFocus(this, 'otp3', 'otp1', event)" onkeydown="moveFocus(this, 'otp3', 'otp1', event)">
+                    <input type="text" maxlength="1" pattern="[0-9]" inputmode="numeric" name="otp3" id="otp3" required oninput="moveFocus(this, 'otp4', 'otp2', event)" onkeydown="moveFocus(this, 'otp4', 'otp2', event)">
+                    <input type="text" maxlength="1" pattern="[0-9]" inputmode="numeric" name="otp4" id="otp4" required oninput="moveFocus(this, 'otp5', 'otp3', event)" onkeydown="moveFocus(this, 'otp5', 'otp3', event)">
+                    <input type="text" maxlength="1" pattern="[0-9]" inputmode="numeric" name="otp5" id="otp5" required oninput="moveFocus(this, 'otp6', 'otp4', event)" onkeydown="moveFocus(this, 'otp6', 'otp4', event)">
+                    <input type="text" maxlength="1" pattern="[0-9]" inputmode="numeric" name="otp6" id="otp6" required oninput="moveFocus(this, null, 'otp5', event)" onkeydown="moveFocus(this, null, 'otp5', event)">
+                </div>
+
+                <button type="submit" class="auth-button">Verify Code</button>
+            </form>
+
+            <p class="resend-text">
+                Didn't receive the code? <a href="{% url 'resend_otp' %}" class="resend-link">Resend</a> <!-- Dynamic resend link -->
+            </p>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2024 StockAI Predictor. All rights reserved.</p>
+    </footer>
+</body>
+</html>
