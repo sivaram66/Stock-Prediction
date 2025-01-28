@@ -12,7 +12,7 @@ from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth import get_user_model
 # Assigning the custom or default User model to the variable User
 User = get_user_model()
-
+from accounts.models import UserChances
 # Create your views here.
 
 
@@ -47,8 +47,6 @@ def login(request):
             return redirect('login')
     else:
         return render(request, 'login.html')
-
-
 
 
 def register(request):

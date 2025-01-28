@@ -116,6 +116,26 @@ body {
     background: #1d4ed8;
 }
 
+/* Work in Progress styles */
+.work-in-progress {
+    background: rgba(17, 24, 39, 0.95);
+    padding: 2rem;
+    border-radius: 1rem;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.work-in-progress h2 {
+    color: #60a5fa;
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+}
+
+.work-in-progress p {
+    color: #9ca3af;
+    font-size: 1.1rem;
+}
+
 /* Stats grid */
 .stats-grid {
     display: grid;
