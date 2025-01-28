@@ -98,21 +98,19 @@ AUTH_USER_MODEL = 'accounts.CustomUser'
 
 WSGI_APPLICATION = 'StockMarketPrediction.wsgi.application'
 
-STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
-
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': env('DATABASE_ENGINE', default='django.db.backends.postgresql'),
-#         'NAME': env('DATABASE_NAME'),
-#         'USER': env('DATABASE_USER'),
-#         'PASSWORD': env('DATABASE_PASSWORD'),
-#         'HOST': env('DATABASE_HOST', default='localhost'),
-#         'PORT': env('DATABASE_PORT', default='5432'),
-#     }
-# }
+DATABASES = {
+    'default': {
+        # 'ENGINE': env('DATABASE_ENGINE', default='django.db.backends.postgresql'),
+        # 'NAME': env('DATABASE_NAME'),
+        # 'USER': env('DATABASE_USER'),
+        # 'PASSWORD': env('DATABASE_PASSWORD'),
+        # 'HOST': env('DATABASE_HOST', default='localhost'),
+        # 'PORT': env('DATABASE_PORT', default='5432'),
+    }
+}
 
 # DATABASES["default"] = dj_database_url.parse(
 #     "postgresql://neondb_owner:npg_7bsTPp8muJGZ@ep-white-river-a8zykmx0-pooler.eastus2.azure.neon.tech/neondb?sslmode=require")
@@ -129,13 +127,7 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 
-
-STORAGES = {
-    # ...
-    "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
-    },
-}
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
