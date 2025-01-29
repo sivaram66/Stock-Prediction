@@ -37,7 +37,7 @@ ticker_mapping = {
 }
 
 
-@login_required
+
 @login_required
 def dashboard(request):
     # Ensure UserChances exists for the logged-in user, but skip this for superusers
@@ -221,101 +221,101 @@ def analysis(request):
             user_chances.save()
 
         # Handle POST request to get the ticker
-        if request.method == "POST":
-            test_ticker = request.POST.get('ticker')
-            if test_ticker:
+        test_ticker = request.POST.get('ticker')
+        if test_ticker:
                 # Check if the user has chances left
-                if user_chances.chances_left > 0:
-                    # Decrease the chances
-                    user_chances.reduce_chances()
+            if user_chances.chances_left > 0:
+                # Decrease the chances
+                user_chances.reduce_chances()
 
-                    # Fetch and process data for prediction
-                    test_data = yf.Ticker(test_ticker).history(period="5y")
-                    test_data = test_data[["Close"]].copy()
-                    test_data.reset_index(inplace=True)
+                # Fetch and process data for prediction
+                
+                test_data = yf.Ticker(test_ticker).history(period="5y")
+                test_data = test_data[["Close"]].copy()
+                test_data.reset_index(inplace=True)
 
-                    # Normalize the test data
-                    scaler = MinMaxScaler(feature_range=(0, 1))
-                    test_data["Scaled_Close"] = scaler.fit_transform(
-                        test_data[["Close"]])
+                # Normalize the test data
+                scaler = MinMaxScaler(feature_range=(0, 1))
+                test_data["Scaled_Close"] = scaler.fit_transform(test_data[["Close"]])
 
-                    # Prepare sequences for LSTM model input
-                    sequence_length = 100
-                    X_test, y_test = [], []
-                    scaled_test_data = test_data["Scaled_Close"].values
+                # Prepare sequences for LSTM model input
+                sequence_length = 100
+                X_test, y_test = [], []
+                scaled_test_data = test_data["Scaled_Close"].values
 
-                    for i in range(sequence_length, len(scaled_test_data)):
-                        X_test.append(scaled_test_data[i - sequence_length:i])
-                        y_test.append(scaled_test_data[i])
+                for i in range(sequence_length, len(scaled_test_data)):
+                    X_test.append(scaled_test_data[i - sequence_length:i])
+                    y_test.append(scaled_test_data[i])
 
-                    X_test = np.array(X_test).reshape((-1, sequence_length, 1))
-                    y_test = np.array(y_test)
+                X_test = np.array(X_test).reshape((-1, sequence_length, 1))
+                y_test = np.array(y_test)
 
-                    # Simulate predictions (Replace this with your trained model's prediction logic)
-                    y_pred = y_test + \
-                        (np.random.rand(len(y_test)) * 0.1 - 0.05)
+                # Simulate predictions (Replace this with your trained model's prediction logic)
+                y_pred = y_test + (np.random.rand(len(y_test)) * 0.1 - 0.05)
 
-                    # Inverse transform predictions and actual values
-                    y_pred = scaler.inverse_transform(y_pred.reshape(-1, 1))
-                    y_test = scaler.inverse_transform(y_test.reshape(-1, 1))
+                # Inverse transform predictions and actual values
+                y_pred = scaler.inverse_transform(y_pred.reshape(-1, 1))
+                y_test = scaler.inverse_transform(y_test.reshape(-1, 1))
 
-                    # Select the corresponding dates for the test data
-                    test_dates = test_data["Date"].iloc[sequence_length:].reset_index(
-                        drop=True)
+                # Select the corresponding dates for the test data
+                test_dates = test_data["Date"].iloc[sequence_length:].reset_index(
+                    drop=True)
 
-                    # Plot the results
-                    plt.figure(figsize=(18, 8))
+                # Plot the results
+                plt.figure(figsize=(18, 8))
 
-                    # Plot actual and predicted prices
-                    plt.plot(test_dates, y_test, label="Actual Price")
-                    plt.plot(test_dates, y_pred, label="Predicted Price")
+                # Plot actual and predicted prices
+                plt.plot(test_dates, y_test, label="Actual Price")
+                plt.plot(test_dates, y_pred, label="Predicted Price")
 
-                    # Set the title and labels
-                    plt.title(
-                        f"Prediction vs Actual for {test_ticker}", fontsize=16)
-                    plt.xlabel("Date", fontsize=14)
-                    plt.ylabel("Stock Price", fontsize=14)
-                    plt.legend()
+                # Set the title and labels
+                plt.title(f"Prediction vs Actual for {test_ticker}", fontsize=16)
+                plt.xlabel("Date", fontsize=14)
+                plt.ylabel("Stock Price", fontsize=14)
+                plt.legend()
 
-                    # Dynamically adjust y-axis limits based on the actual and predicted values
-                    plt.ylim(min(np.min(y_test), np.min(y_pred)) * 0.9,
-                             max(np.max(y_test), np.max(y_pred)) * 1.1)
+                # Dynamically adjust y-axis limits based on the actual and predicted values
+                plt.ylim(min(np.min(y_test), np.min(y_pred)) * 0.9,
+                        max(np.max(y_test), np.max(y_pred)) * 1.1)
 
-                    # Format the x-axis to display months
-                    plt.xticks(test_dates[::int(len(test_dates) / 6)],
-                               test_dates[::int(len(test_dates) / 6)].dt.strftime('%b %Y'), rotation=45, fontsize=12)
+                # Format the x-axis to display months
+                plt.xticks(test_dates[::int(len(test_dates) / 6)],
+                        test_dates[::int(len(test_dates) / 6)].dt.strftime('%b %Y'), rotation=45, fontsize=12)
 
-                    # Adjust spacing to ensure labels are visible
-                    plt.tight_layout()
+                # Adjust spacing to ensure labels are visible
+                plt.tight_layout()
 
-                    # Save the plot to a buffer
-                    buf = io.BytesIO()
-                    plt.savefig(buf, format='png')
-                    buf.seek(0)
+                # Save the plot to a buffer
+                buf = io.BytesIO()
+                plt.savefig(buf, format='png')
+                buf.seek(0)
 
-                    # Encode the image to Base64
-                    img_data2 = base64.b64encode(buf.read()).decode('utf-8')
-                    buf.close()
+                # Encode the image to Base64
+                img_data2 = base64.b64encode(buf.read()).decode('utf-8')
+                buf.close()
 
-                    # Example context data
-                    context = {
-                        "img_data2": img_data2,
-                        "stock": test_ticker,
-                        'chances_left': user_chances.chances_left
-                    }
-                    return render(request, 'analysis.html', context)
-                else:
-                    # If no chances left for today, show the message
-                    return render(request, 'analysis.html', {
-                        'message': 'No chances left! Please try again tomorrow.',
-                        'chances_left': user_chances.chances_left,
-                    })
+                # Example context data
+                context = {
+                    "img_data2": img_data2,
+                    "ticker": test_ticker,
+                    'stock': test_ticker,
+                   'chances_left': user_chances.chances_left,
+                    "selected_ticker": test_ticker,
+                }
+                return render(request, 'analysis.html', context)
             else:
-                # No ticker provided, ask user to select one
+                # If no chances left for today, show the message
                 return render(request, 'analysis.html', {
-                    'message': 'Please select a valid company to proceed.',
+                    'message': 'No chances left! Please try again tomorrow.',
                     'chances_left': user_chances.chances_left,
                 })
+        else:
+            # No ticker provided, ask user to select one
+            return render(request, 'analysis.html', {
+                'message': 'Please select a valid company to proceed.',
+                'chances_left': user_chances.chances_left,
+            })
+        
     else:
         # Superuser logic: skip the chances and reset logic
         test_ticker = request.POST.get('ticker', 'AAPL')
@@ -386,6 +386,8 @@ def analysis(request):
         # Example context data
         context = {
             "img_data2": img_data2,
-            "stock": test_ticker,
+            "ticker": test_ticker,
+            "selected_ticker": test_ticker,
+             'stock': test_ticker,
         }
         return render(request, 'analysis.html', context)

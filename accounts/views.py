@@ -128,3 +128,78 @@ def logout(request):
     auth.logout(request)
     return redirect('/')
 
+
+def forget_password(request):
+    if request.method == "POST":
+        email = request.POST.get('email')
+
+        # Check if the user exists
+        if User.objects.filter(email=email).exists():
+            otp = send_otp(email)  # Sending OTP to the user’s email
+            request.session['otp'] = otp
+            request.session['email'] = email
+
+            messages.success(request, "OTP sent to your email.")
+            # Redirecting to OTP validation page
+            return redirect('validate_otp2')
+        else:
+            messages.error(request, "Email not found. Please register first.")
+            return redirect('forget_password')
+
+    return render(request, 'forget_password.html')
+
+
+def reset_password(request):
+    if request.method == 'POST':
+        password1 = request.POST['password']
+        password2 = request.POST['confirm_password']
+
+        if password1 == password2:
+            email = request.session.get('reset_email')
+            try:
+                user = User.objects.get(email=email)
+                user.set_password(password1)  # Update password
+                user.save()
+                del request.session['reset_email']
+                messages.success(
+                    request, "Password reset successful! Please log in.")
+                return redirect('login')  # Redirecting to login after reset
+            except User.DoesNotExist:
+                messages.error(request, "User not found.")
+                return redirect('forget_password')
+        else:
+            messages.error(request, "Passwords do not match.")
+            return redirect('reset_password')
+
+    return render(request, 'reset_password.html')
+
+
+def validate_otp2(request):
+    if request.method == 'POST':
+        # Concatenating the OTP digits
+        otp = ''.join([
+            request.POST.get(f'otp{i}', '') for i in range(1, 7)
+        ])
+        user_otp = otp
+
+        if int(user_otp) == request.session.get('otp'):
+            email = request.session.get('email')
+
+            try:
+                user = User.objects.get(email=email)  # Get user by email
+                # Store email for password reset
+                request.session['reset_email'] = email
+                # Clear OTP after successful verification
+                del request.session['otp']
+                messages.success(
+                    request, "OTP verified! Set your new password.")
+                # Redirect to reset password page
+                return redirect('reset_password')
+            except User.DoesNotExist:
+                messages.error(request, "User not found.")
+                return redirect('forget_password')
+        else:
+            messages.error(request, "Invalid OTP.")
+            return redirect('validate_otp2')
+
+    return render(request, 'validate_otp.html')

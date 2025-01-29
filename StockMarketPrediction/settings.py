@@ -103,13 +103,13 @@ WSGI_APPLICATION = 'StockMarketPrediction.wsgi.application'
 
 DATABASES = {
     'default': {
-        # 'ENGINE': env('DATABASE_ENGINE', default='django.db.backends.postgresql'),
-        # 'NAME': env('DATABASE_NAME'),
-        # 'USER': env('DATABASE_USER'),
-        # 'PASSWORD': env('DATABASE_PASSWORD'),
-        # 'HOST': env('DATABASE_HOST', default='localhost'),
-        # 'PORT': env('DATABASE_PORT', default='5432'),
-    }
+    #     'ENGINE': env('DATABASE_ENGINE', default='django.db.backends.postgresql'),
+    #     'NAME': env('DATABASE_NAME'),
+    #     'USER': env('DATABASE_USER'),
+    #     'PASSWORD': env('DATABASE_PASSWORD'),
+    #     'HOST': env('DATABASE_HOST', default='localhost'),
+    #     'PORT': env('DATABASE_PORT', default='5432'),
+     }
 }
 
 # DATABASES["default"] = dj_database_url.parse(
